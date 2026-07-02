@@ -79,3 +79,4 @@ class SectorScene(Scene):
 
         self.play(*[FadeOut(mob) for mob in self.mobjects], 
                   run_time = 0.7)
+
