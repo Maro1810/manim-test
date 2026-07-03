@@ -28,7 +28,7 @@ class SectorScene(Scene):
         slash = Line([2.7, 0.7, 0], [1, 0, 0],
                      color = RED).move_to(arc_length.get_center()).shift(RIGHT*0.2, DOWN*0.2)
 
-        # self.add_sound("in depth vid 14.m4a")
+        # self.add_sound("voiceovers/in depth vid 14.m4a")
 
         self.wait(0.7)
         self.play(Create(sector), 
@@ -69,7 +69,7 @@ class SectorScene(Scene):
         self.play(FadeOut(arc_length, slash),
                   run_time = 0.4)
 
-        arc_length = MathTex(r"s=r\theta").shift(arc_length.get_center())
+        arc_length = MathTex(r"s", "=", r"r\theta").shift(arc_length.get_center())
 
         self.play(Create(arc_length),
                   run_time = 0.5,
@@ -77,6 +77,66 @@ class SectorScene(Scene):
 
         self.wait(1.4)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], 
+        self.play(*[FadeOut(mob) for mob in self.mobjects if mob != arc_length], 
                   run_time = 0.7)
+
+        # self.add_sound(r"C:\Users\rayya\Downloads\manim-test\voiceovers\in depth vid 16.m4a")        
+        self.wait(0.5)
+        self.play(arc_length.animate.shift(UP*4.5).scale(1.7).shift(LEFT*0.2))
+
+        v = MathTex("v", font_size = 70).move_to([arc_length.get_center()]).shift(DOWN*2, LEFT*1.7)
+
+        self.play(Create(v))
+
+        arr = Arrow(start=LEFT, end=RIGHT).shift(UP*0.1, LEFT*0.4)
+
+        self.play(Create(arr))
+
+        om = MathTex(r"\omega", font_size = 70).move_to([arc_length.get_center()]).shift(DOWN*2, RIGHT*1.2)
+        
+        self.play(Create(om))
+        
+        left = MathTex(r"\frac{d}{dt}",
+                       font_size = 60)
+        right = MathTex(r"\frac{d}{dt}",
+                        font_size = 60)
+
+        left.to_edge(UP).shift(UP*2)
+        right.to_edge(UP).shift(UP*2, RIGHT*3)
+
+        self.play(left.animate.next_to(arc_length[0], LEFT).shift(UP*0.1))
+        self.play(arc_length[2].animate.shift(RIGHT*0.7))
+        self.play(right.animate.next_to(arc_length[2], LEFT))
+
+        self.wait(1)
+
+        arc_length2 = MathTex(r"\frac{ds}{dt}=r\frac{d\theta}{dt}", font_size = 65)
+
+        arc_length2.move_to([arc_length.get_center()]).shift(LEFT*0.2)
+
+        self.play(TransformMatchingTex(arc_length, arc_length2), 
+                  FadeOut(om, run_time = 0.2),
+                  FadeOut(v, run_time = 0.2),
+                  FadeOut(arr, run_time = 0.2),
+                  FadeOut(left, run_time = 0.2), 
+                  FadeOut(right, run_time = 0.2))
+        
+        self.wait(2)
+
+        rw = MathTex(r"v=r\omega", font_size = 65).move_to(arc_length2.get_center())
+
+        w = MathTex(r"\omega=\frac{d\theta}{dt}")
+        lin = MathTex(r"v=\frac{ds}{dt}")
+        
+        self.play(Uncreate(arc_length2, run_time = 0.5))
+        self.play(Create(rw))
+
+        self.wait(0.5)
+        self.play(Create(w), w.animate.move_to(rw.get_center()).shift(DOWN*1.5, LEFT*2))
+        self.wait(1.2)
+        self.play(Create(lin), lin.animate.move_to(rw.get_center()).shift(DOWN*1.5, RIGHT*2))
+        
+        self.wait(2)
+
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time = 2)
 
