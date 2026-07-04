@@ -28,8 +28,6 @@ class SectorScene(Scene):
         slash = Line([2.7, 0.7, 0], [1, 0, 0],
                      color = RED).move_to(arc_length.get_center()).shift(RIGHT*0.2, DOWN*0.2)
 
-        # self.add_sound("voiceovers/in depth vid 14.m4a")
-
         self.wait(0.7)
         self.play(Create(sector), 
                   run_time = 0.5)
@@ -79,8 +77,7 @@ class SectorScene(Scene):
 
         self.play(*[FadeOut(mob) for mob in self.mobjects if mob != arc_length], 
                   run_time = 0.7)
-
-        # self.add_sound(r"C:\Users\rayya\Downloads\manim-test\voiceovers\in depth vid 16.m4a")        
+               
         self.wait(0.5)
         self.play(arc_length.animate.shift(UP*4.5).scale(1.7).shift(LEFT*0.2))
 
@@ -139,4 +136,16 @@ class SectorScene(Scene):
         self.wait(2)
 
         self.play(*[FadeOut(mob) for mob in self.mobjects], run_time = 2)
+
+class CircleScene(Scene):
+    def construct(self):
+        circles = []
+        colors = [BLUE, GREEN, PINK, YELLOW, ORANGE]
+
+        for i in range(5):
+            circles.append(Circle(radius=i*0.1, color=colors[i]).move_to([-4+i, 0, 0]))
+
+        self.play(*[Create(circ) for circ in circles])
+
+        self.wait(2)
 
