@@ -1,3 +1,5 @@
+import math
+
 from manim import *
 import numpy as np
 
@@ -142,10 +144,33 @@ class CircleScene(Scene):
         circles = []
         colors = [BLUE, GREEN, PINK, YELLOW, ORANGE]
 
-        for i in range(5):
-            circles.append(Circle(radius=i*0.1, color=colors[i]).move_to([-4+i, 0, 0]))
+        ang_velocity = PI
 
-        self.play(*[Create(circ) for circ in circles])
+        for i in range(3):
+            circles.append(Circle(radius=i*0.5+0.5, color=colors[i]))
+        
+        circ_group = VGroup(*circles)
 
-        self.wait(2)
+        circ_group.arrange(buff = 1)
 
+        start = circles[1].point_at_angle(PI/2)
+        end = start+RIGHT*2
+
+        theta = ValueTracker(0)
+
+        arrows = [self.create_arrow(i, circles, theta) for i in range(3)]
+
+        self.add(circ_group)
+        self.add(*arrows)
+
+        self.play(theta.animate.set_value(6*PI), run_time=15, rate_func=linear)
+    
+    def tangent_vector(self, angle, point, radius):
+        return point+np.array([-radius*math.sin(angle), radius*math.cos(angle), 0])
+    
+    def create_arrow(self, i, circles, theta):
+        return always_redraw(lambda: Arrow(
+            circles[i].point_at_angle(theta.get_value()),
+            self.tangent_vector(theta.get_value(), circles[i].point_at_angle(theta.get_value()), 0.5*i+0.5),
+            buff=0,
+            stroke_width=2))
