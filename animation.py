@@ -159,10 +159,12 @@ class CircleScene(Scene):
         theta = ValueTracker(0)
 
         arrows = [self.create_arrow(i, circles, theta) for i in range(3)]
+        dots = [self.dot(i, circles, theta, colors[i]) for i in range(3)]
 
         self.add(circ_group)
         self.add(*arrows)
-
+        self.add(*dots)
+        
         self.play(theta.animate.set_value(6*PI), run_time=15, rate_func=linear)
     
     def tangent_vector(self, angle, point, radius):
@@ -173,4 +175,11 @@ class CircleScene(Scene):
             circles[i].point_at_angle(theta.get_value()),
             self.tangent_vector(theta.get_value(), circles[i].point_at_angle(theta.get_value()), 0.5*i+0.5),
             buff=0,
-            stroke_width=2))
+            stroke_width=1))
+    
+    def dot(self, i, circles, theta, col):
+        return always_redraw(lambda: Dot(
+            point=circles[i].point_at_angle(theta.get_value()),
+            radius=0.05,
+            color=col
+        ))
