@@ -158,23 +158,40 @@ class CircleScene(Scene):
 
         theta = ValueTracker(0)
 
-        arrows = [self.create_arrow(i, circles, theta) for i in range(3)]
+        romega = MathTex(r"v=r\omega", font_size=50).shift(UP*2.5)
+
+        omega = MathTex(r"\omega=\frac{11}{7}\pi", font_size=30).shift(DOWN*2.5, LEFT*0.6)
+        label = MathTex(r"rad/s", font_size = 30).next_to(omega)
+
+        arrows = [self.create_arrow(i, circles, theta, colors[i]) for i in range(3)]
+
+        labels = [MathTex("r = ", 
+        str(0.5*i+0.5), font_size=20).move_to(circles[i].get_bottom()+0.4*DOWN) for i in range(3)]
+
         dots = [self.dot(i, circles, theta, colors[i]) for i in range(3)]
+
+        # self.add_sound("voiceovers/in depth vid 17.m4a")
 
         self.add(circ_group)
         self.add(*arrows)
+        self.add(*labels)
         self.add(*dots)
+
+        self.play(*[FadeIn(mob) for mob in self.mobjects if mob != romega])
         
-        self.play(theta.animate.set_value(6*PI), run_time=15, rate_func=linear)
-    
+        self.play(Write(romega))
+        self.play(FadeIn(omega, label), run_time=0.4)
+        self.play(theta.animate.set_value(22*PI), run_time=14, rate_func=linear)
+
     def tangent_vector(self, angle, point, radius):
         return point+np.array([-radius*math.sin(angle), radius*math.cos(angle), 0])
     
-    def create_arrow(self, i, circles, theta):
+    def create_arrow(self, i, circles, theta, col):
         return always_redraw(lambda: Arrow(
             circles[i].point_at_angle(theta.get_value()),
             self.tangent_vector(theta.get_value(), circles[i].point_at_angle(theta.get_value()), 0.5*i+0.5),
             buff=0,
+            color=col,
             stroke_width=1))
     
     def dot(self, i, circles, theta, col):
