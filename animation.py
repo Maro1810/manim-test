@@ -200,3 +200,53 @@ class CircleScene(Scene):
             radius=0.05,
             color=col
         ))
+    
+class RobotScene(Scene):
+    def construct(self):
+        chassis = Square(side_length=2, fill_color=BLUE, fill_opacity=1.0)
+
+        modules = []
+
+        pos = []
+
+        top_left = chassis.get_left()+chassis.get_top()
+        top_right = chassis.get_right()+chassis.get_top()
+        bottom_left = chassis.get_left()+chassis.get_bottom()
+        bottom_right = chassis.get_right()+chassis.get_bottom()
+
+        pos.append(top_right)
+        pos.append(top_left)
+        pos.append(bottom_left)
+        pos.append(bottom_right)
+
+        for i in range(len(pos)):
+            mod = Rectangle(width=0.2, height=0.5, fill_color=GRAY, fill_opacity=1.0).move_to(pos[i])
+
+            modules.append(mod)
+
+        pos_vectors = []
+
+        for i in range(len(pos)):
+            pos_vectors.append(Arrow(chassis.get_center(), 
+                pos[i], stroke_width=2, buff=0, tip_length=0.2, color=LOGO_BLACK))
+
+        full_chassis = VGroup(chassis, Dot(chassis.get_center(), radius=0.05, color=BLACK))
+
+        self.add_sound("voiceovers/in depth vid 18.m4a")
+        self.play(Create(full_chassis))
+
+        self.play(*[Create(module) for module in modules], run_time=0.3)
+
+        self.wait(0.7)
+
+        for i in range(len(pos)):
+            self.play(Create(pos_vectors[i]), run_time=0.7)
+
+        self.wait(2.5)
+
+        for i in range(len(pos)):
+            if i==0:
+                continue
+            self.play(Uncreate(pos_vectors[i]), run_time=0.25)
+
+        self.wait(3)
