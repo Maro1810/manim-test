@@ -203,7 +203,7 @@ class CircleScene(Scene):
     
 class RobotScene(Scene):
     def construct(self):
-        chassis = Square(side_length=2, fill_color=BLUE, fill_opacity=1.0)
+        chassis = Square(side_length=2, fill_color=BLUE_C, fill_opacity=1.0)
 
         modules = []
 
@@ -229,6 +229,13 @@ class RobotScene(Scene):
         for i in range(len(pos)):
             pos_vectors.append(Arrow(chassis.get_center(), 
                 pos[i], stroke_width=2, buff=0, tip_length=0.2, color=LOGO_BLACK))
+            
+        vel_vectors = []
+
+        for i in range(len(pos)):
+            point = pos[i] - chassis.get_center()
+
+            vel_vectors.append(Arrow(pos[i], pos[i]+[-point[1], point[0], 0], stroke_width=2, buff=0, tip_length=0.2, color=ORANGE))
 
         full_chassis = VGroup(chassis, Dot(chassis.get_center(), radius=0.05, color=BLACK))
 
@@ -248,5 +255,27 @@ class RobotScene(Scene):
             if i==0:
                 continue
             self.play(Uncreate(pos_vectors[i]), run_time=0.25)
+        
+        r = MathTex("r").shift(UP*0.6+RIGHT*0.2)
 
+        self.play(Write(r))
+
+        self.wait(2.5)
+
+        self.play(*[Transform(mod, mod.copy().rotate(PI/4)) if index%2 == 0
+                    else Transform(mod, mod.copy().rotate(-PI/4)) for index, mod in enumerate(modules)])
+
+        self.play(Create(vel_vectors[0]))
+   
+        full_robot = VGroup(full_chassis, *modules, pos_vectors[0], r, vel_vectors[0])
+        
+        self.play(Rotate(full_robot, 
+                         angle=2*PI, 
+                         about_point=chassis.get_center()),
+                         rate_func=linear,
+                         run_time=5)
+
+        self.play(Uncreate(vel_vectors[0]), run_time=0.5)
+            
+        # self.add_sound("voiceovers/in depth vid 19.m4a")
         self.wait(3)
