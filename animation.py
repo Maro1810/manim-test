@@ -223,7 +223,8 @@ class RobotScene(Scene):
 
         dir = MathTex("direction", "=", r"\ ?", font_size=50).shift(DOWN*2)
 
-        r_vector = MathTex(r"r=\left\langle r_x,r_y \right\rangle", font_size=60).shift(RIGHT*2)
+        r_vector = MathTex(r"r=\left\langle r_x,r_y \right\rangle", font_size=40).shift(RIGHT*3+UP)
+        r_ortho = MathTex(r"r_\bot=\left\langle -r_y,r_x \right\rangle", font_size=40).shift(RIGHT*2+UP*2)
 
         for i in range(len(pos)):
             mod = Rectangle(width=0.2, height=0.5, fill_color=GRAY, fill_opacity=1.0).move_to(pos[i])
@@ -242,6 +243,8 @@ class RobotScene(Scene):
             point = pos[i] - chassis.get_center()
 
             vel_vectors.append(Arrow(pos[i], pos[i]+[-point[1], point[0], 0], stroke_width=2, buff=0, tip_length=0.2, color=ORANGE))
+        
+        vec_copy = vel_vectors[0].copy()
 
         full_chassis = VGroup(chassis, Dot(chassis.get_center(), radius=0.05, color=BLACK))
 
@@ -288,7 +291,15 @@ class RobotScene(Scene):
 
         self.wait(1)
 
+        full_robot.remove(vel_vectors[0])
+
+        self.add_sound("voiceovers/in depth vid 19.m4a")
+
+        self.wait(0.8)
+
         self.play(Write(romega), run_time=0.7)
+
+        self.wait(2)
 
         vec = Arrow(chassis.get_center(), top_right, stroke_width=5, buff=0, tip_length=0.5, color=ORANGE)
 
@@ -296,6 +307,18 @@ class RobotScene(Scene):
 
         self.play(Write(dir), Rotate(vec, angle=2*PI, about_point=chassis.get_center()), run_time=2)
 
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.4)
 
+        self.play(FadeIn(full_robot))
+
+        self.play(Write(r_vector))
+
+        self.wait(2)
+
+        self.play(Create(vec_copy))
+
+        self.wait(1.5)
+
+        self.play(Create(r_ortho))
 
         self.wait(5)
