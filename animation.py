@@ -253,46 +253,46 @@ class RobotScene(Scene):
 
         # self.add_sound("voiceovers/in depth vid 18.m4a")
         
-        # self.play(Create(full_chassis))
+        self.play(Create(full_chassis))
 
-        # self.play(*[Create(module) for module in modules], run_time=0.3)
+        self.play(*[Create(module) for module in modules], run_time=0.3)
 
-        # self.wait(0.7)
+        self.wait(0.7)
 
-        # for i in range(len(pos)):
-        #     self.play(Create(pos_vectors[i]), run_time=0.7)
+        for i in range(len(pos)):
+            self.play(Create(pos_vectors[i]), run_time=0.7)
 
-        # self.wait(2.5)
+        self.wait(2.5)
 
-        # for i in range(len(pos)):
-        #     if i==0:
-        #         continue
-        #     self.play(Uncreate(pos_vectors[i]), run_time=0.25)
+        for i in range(len(pos)):
+            if i==0:
+                continue
+            self.play(Uncreate(pos_vectors[i]), run_time=0.25)
         
         r = MathTex("r").shift(UP*0.6+RIGHT*0.2)
 
-        # self.play(Write(r))
+        self.play(Write(r))
 
-        # self.wait(2.5)
+        self.wait(2.5)
         
-        # self.play(*[Transform(mod, mod.copy().rotate(PI/4)) if index%2 == 0
-        #             else Transform(mod, mod.copy().rotate(-PI/4)) for index, mod in enumerate(modules)])
+        self.play(*[Transform(mod, mod.copy().rotate(PI/4)) if index%2 == 0
+                    else Transform(mod, mod.copy().rotate(-PI/4)) for index, mod in enumerate(modules)])
 
-        # self.play(Create(vel_vectors[0]))
+        self.play(Create(vel_vectors[0]))
    
         full_robot = VGroup(full_chassis, *modules, pos_vectors[0], r, vel_vectors[0])
 
-        # self.play(Rotate(full_robot, 
-        #                  angle=2*PI, 
-        #                  about_point=chassis.get_center()),
-        #                  rate_func=linear,
-        #                  run_time=5)
+        self.play(Rotate(full_robot, 
+                         angle=2*PI, 
+                         about_point=chassis.get_center()),
+                         rate_func=linear,
+                         run_time=5)
         
-        # self.play(Uncreate(vel_vectors[0]), run_time=0.5)
+        self.play(Uncreate(vel_vectors[0]), run_time=0.5)
 
-        # self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=1)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=1)
 
-        # self.wait(1)
+        self.wait(1)
 
         full_robot.remove(vel_vectors[0])
 
@@ -342,7 +342,7 @@ class RobotScene(Scene):
 
         self.play(vec_copy.animate.move_to(top_right+UP*0.2+LEFT*0.2))
 
-        self.add_sound("voiceovers/in depth vid 19.m4a")
+        # self.add_sound("voiceovers/in depth vid 19.m4a")
 
         romega = MathTex(r"\omega ||r||", font_size=40)
 
@@ -353,8 +353,6 @@ class RobotScene(Scene):
         self.play(Indicate(r_ortho[2]))
 
         self.play(FadeOut(r_ortho[0]), FadeOut(r_ortho[1]))
-
-        # self.play(r_ortho_unit[2].animate.shift(RIGHT))
 
         self.play(romega.animate.next_to(r_ortho_unit[2], LEFT, buff=0.2))
 
