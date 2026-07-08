@@ -113,7 +113,7 @@ class SectorScene(Scene):
 
         arc_length2.move_to([arc_length.get_center()]).shift(LEFT*0.2)
 
-        self.play(TransformMatchingTex(arc_length, arc_length2), 
+        self.play(Transform(arc_length, arc_length2), 
                   FadeOut(om, run_time = 0.2),
                   FadeOut(v, run_time = 0.2),
                   FadeOut(arr, run_time = 0.2),
@@ -127,7 +127,7 @@ class SectorScene(Scene):
         w = MathTex(r"\omega=\frac{d\theta}{dt}")
         lin = MathTex(r"v=\frac{ds}{dt}")
         
-        self.play(Uncreate(arc_length2, run_time = 0.5))
+        self.play(Uncreate(arc_length, run_time = 0.5))
         self.play(Create(rw))
 
         self.wait(0.5)
@@ -224,7 +224,9 @@ class RobotScene(Scene):
         dir = MathTex("direction", "=", r"\ ?", font_size=50).shift(DOWN*2)
 
         r_vector = MathTex(r"r=\left\langle r_x,r_y \right\rangle", font_size=40).shift(RIGHT*3+UP)
-        r_ortho = MathTex(r"r_\bot=\left\langle -r_y,r_x \right\rangle", font_size=40).shift(RIGHT*2+UP*2)
+        r_ortho = MathTex(r"r_\bot", "=", r"\left\langle -r_y,r_x \right\rangle", font_size=40).shift(RIGHT*2+UP*2)
+
+        r_ortho_unit = MathTex(r"\hat{r}_\bot", "=", r"\left\langle \frac{-r_y}{||r||},\frac{r_x}{||r||} \right\rangle", font_size=40)
 
         for i in range(len(pos)):
             mod = Rectangle(width=0.2, height=0.5, fill_color=GRAY, fill_opacity=1.0).move_to(pos[i])
@@ -242,54 +244,55 @@ class RobotScene(Scene):
         for i in range(len(pos)):
             point = pos[i] - chassis.get_center()
 
-            vel_vectors.append(Arrow(pos[i], pos[i]+[-point[1], point[0], 0], stroke_width=2, buff=0, tip_length=0.2, color=ORANGE))
+            vel_vectors.append(Arrow(pos[i], pos[i]+[-point[1], point[0], 0], 
+                    stroke_width=4, buff=0, tip_length=0.2, color=ORANGE))
         
         vec_copy = vel_vectors[0].copy()
 
         full_chassis = VGroup(chassis, Dot(chassis.get_center(), radius=0.05, color=BLACK))
 
-        self.add_sound("voiceovers/in depth vid 18.m4a")
+        # self.add_sound("voiceovers/in depth vid 18.m4a")
         
-        self.play(Create(full_chassis))
+        # self.play(Create(full_chassis))
 
-        self.play(*[Create(module) for module in modules], run_time=0.3)
+        # self.play(*[Create(module) for module in modules], run_time=0.3)
 
-        self.wait(0.7)
+        # self.wait(0.7)
 
-        for i in range(len(pos)):
-            self.play(Create(pos_vectors[i]), run_time=0.7)
+        # for i in range(len(pos)):
+        #     self.play(Create(pos_vectors[i]), run_time=0.7)
 
-        self.wait(2.5)
+        # self.wait(2.5)
 
-        for i in range(len(pos)):
-            if i==0:
-                continue
-            self.play(Uncreate(pos_vectors[i]), run_time=0.25)
+        # for i in range(len(pos)):
+        #     if i==0:
+        #         continue
+        #     self.play(Uncreate(pos_vectors[i]), run_time=0.25)
         
         r = MathTex("r").shift(UP*0.6+RIGHT*0.2)
 
-        self.play(Write(r))
+        # self.play(Write(r))
 
-        self.wait(2.5)
+        # self.wait(2.5)
         
-        self.play(*[Transform(mod, mod.copy().rotate(PI/4)) if index%2 == 0
-                    else Transform(mod, mod.copy().rotate(-PI/4)) for index, mod in enumerate(modules)])
+        # self.play(*[Transform(mod, mod.copy().rotate(PI/4)) if index%2 == 0
+        #             else Transform(mod, mod.copy().rotate(-PI/4)) for index, mod in enumerate(modules)])
 
-        self.play(Create(vel_vectors[0]))
+        # self.play(Create(vel_vectors[0]))
    
         full_robot = VGroup(full_chassis, *modules, pos_vectors[0], r, vel_vectors[0])
 
-        self.play(Rotate(full_robot, 
-                         angle=2*PI, 
-                         about_point=chassis.get_center()),
-                         rate_func=linear,
-                         run_time=5)
+        # self.play(Rotate(full_robot, 
+        #                  angle=2*PI, 
+        #                  about_point=chassis.get_center()),
+        #                  rate_func=linear,
+        #                  run_time=5)
         
-        self.play(Uncreate(vel_vectors[0]), run_time=0.5)
+        # self.play(Uncreate(vel_vectors[0]), run_time=0.5)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=1)
+        # self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=1)
 
-        self.wait(1)
+        # self.wait(1)
 
         full_robot.remove(vel_vectors[0])
 
@@ -307,6 +310,8 @@ class RobotScene(Scene):
 
         self.play(Write(dir), Rotate(vec, angle=2*PI, about_point=chassis.get_center()), run_time=2)
 
+        self.wait(1)
+
         self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.4)
 
         self.play(FadeIn(full_robot))
@@ -320,5 +325,70 @@ class RobotScene(Scene):
         self.wait(1.5)
 
         self.play(Create(r_ortho))
+
+        self.wait(1.2)
+
+        self.play(r_ortho.animate.shift(UP+LEFT*2))
+
+        r_ortho_unit.move_to(r_ortho)
+
+        r_ortho_copy = r_ortho.copy()
+
+        self.play(Transform(r_ortho, r_ortho_unit))
+
+        self.play(ScaleInPlace(vec_copy, 0.4))
+
+        self.play(vec_copy[0].animate.set_stroke(width=4, family=False), run_time=0.2)
+
+        self.play(vec_copy.animate.move_to(top_right+UP*0.2+LEFT*0.2))
+
+        self.add_sound("voiceovers/in depth vid 19.m4a")
+
+        romega = MathTex(r"\omega ||r||", font_size=40)
+
+        romega.to_edge(UP).shift(RIGHT+UP*2)
+
+        self.wait(2)
+
+        self.play(Indicate(r_ortho[2]))
+
+        self.play(FadeOut(r_ortho[0]), FadeOut(r_ortho[1]))
+
+        # self.play(r_ortho_unit[2].animate.shift(RIGHT))
+
+        self.play(romega.animate.next_to(r_ortho_unit[2], LEFT, buff=0.2))
+
+        slash = Line([-0.5, 3.4, 0], [0, 3.0, 0],
+                     color = RED).shift(LEFT*0.8+DOWN*0.2)
+        
+        slash2 = slash.copy().shift(DOWN*0.3+RIGHT*1.1)
+
+        slash3 = slash2.copy().shift(RIGHT)
+
+        self.wait(1)
+        
+        self.play(Create(slash), Create(slash2), Create(slash3))
+
+        self.wait(1)
+
+        romega2 = MathTex(r"\omega").move_to(romega)
+
+        self.play(Transform(r_ortho[2], r_ortho_copy[2]), 
+                  Transform(romega, romega2), 
+                  FadeOut(slash), FadeOut(slash2), FadeOut(slash3), run_time = 0.5)
+        
+        self.play(r_ortho[2].animate.shift(LEFT*0.25), romega.animate.shift(RIGHT*0.45), run_time = 0.5)
+
+        self.wait(1)
+
+        v_rot = MathTex(r"v_{rot}=\left\langle -\omega r_y, \omega r_x \right\rangle", font_size=40).move_to(romega).shift(RIGHT*0.8)
+
+        self.play(FadeOut(romega), Transform(r_ortho[2], v_rot), ScaleInPlace(vec_copy, 2.5))
+
+        v_rot_label = MathTex(r"v_{rot}", font_size=30, color=ORANGE).shift(UP*2, LEFT*0.3)
+
+        self.play(vec_copy.animate.shift(UP*0.3+LEFT*0.3))
+
+        self.play(Write(v_rot_label))
 
         self.wait(5)
