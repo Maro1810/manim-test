@@ -420,7 +420,7 @@ class RobotScene(Scene):
 
         self.play(*[FadeOut(mob) for mob in self.mobjects])
 
-class MatrixScene(Scene):
+class ModuleStatesScene(Scene):
 
     def construct(self):
         wpi = ImageMobject("wpilib.png")
@@ -430,6 +430,7 @@ class MatrixScene(Scene):
         chassis_speeds = MathTex(r"\begin{bmatrix} v_x \\ v_y \\ \omega \end{bmatrix}", font_size=40)
 
         chassis_speeds_label = MathTex("Chassis \ Speeds", font_size=40)
+        robot_relative = MathTex("(Robot-relative)", font_size=20)
 
         chassis_speeds.shift(LEFT*3.8)
 
@@ -440,19 +441,31 @@ class MatrixScene(Scene):
         arrow2 = arrow.copy().next_to(rec)
 
         v_overall = MathTex(r"\begin{bmatrix} v_{xr}-\omega r_y \\ v_{yr}+\omega r_x \end{bmatrix}", font_size=40).next_to(arrow2)
+        v_overall_label = MathTex(r"v_{overall}", font_size=40)
 
         method_label = MathTex("toSwerveModuleStates()", font_size=25).shift(LEFT*0.5)
 
-        brace = BraceBetweenPoints([-3, 0, 0], [-1.5, 0, 0]).shift(0.6*DOWN+LEFT*1.6)
+        brace = BraceBetweenPoints([-3, 0, 0], [-1.5, 0, 0]).next_to(chassis_speeds, DOWN)
+        brace2 = BraceBetweenPoints([-3, 0, 0], [-0.5, 0, 0]).next_to(v_overall, DOWN)
 
         chassis_speeds_label.next_to(brace, DOWN)
-        
+        robot_relative.next_to(chassis_speeds_label, DOWN)
+        v_overall_label.next_to(brace2, DOWN)
 
         self.play(Write(chassis_speeds))
-        self.play(Create(arrow))
-        self.play(Create(rec), Write(method_label))
-        self.play(Create(arrow2))
-        self.play(Write(v_overall))
         self.play(Create(brace), Write(chassis_speeds_label))
+        self.play(Write(robot_relative), run_time=0.3)
 
-        self.wait(4)
+        self.wait(1.6)
+        self.play(Indicate(chassis_speeds))
+
+        self.play(Create(arrow))
+        self.play(Create(rec), Write(method_label), run_time=1)
+        self.play(Create(arrow2))
+
+        self.play(Write(v_overall), run_time=0.7)
+        self.play(Create(brace2), Write(v_overall_label), Indicate(v_overall))
+
+        self.wait(0.8)
+
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
