@@ -219,7 +219,7 @@ class RobotScene(Scene):
         pos.append(bottom_left)
         pos.append(bottom_right)
 
-        romega = MathTex(r"||v||=r\omega", font_size=50).shift(UP*2.5)
+        romega = MathTex(r"||v||=||r||\omega", font_size=50).shift(UP*2.5)
 
         dir = MathTex("direction", "=", r"\ ?", font_size=50).shift(DOWN*2)
 
@@ -419,3 +419,40 @@ class RobotScene(Scene):
         self.wait(3)
 
         self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+class MatrixScene(Scene):
+
+    def construct(self):
+        wpi = ImageMobject("wpilib.png")
+
+        # self.play(FadeIn(wpi))
+
+        chassis_speeds = MathTex(r"\begin{bmatrix} v_x \\ v_y \\ \omega \end{bmatrix}", font_size=40)
+
+        chassis_speeds_label = MathTex("Chassis \ Speeds", font_size=40)
+
+        chassis_speeds.shift(LEFT*3.8)
+
+        arrow = Arrow(ORIGIN, ORIGIN+[1.3,0,0], stroke_width=3).next_to(chassis_speeds)
+
+        rec = Rectangle(height=1, width=3.3, color=WHITE).next_to(arrow)
+
+        arrow2 = arrow.copy().next_to(rec)
+
+        v_overall = MathTex(r"\begin{bmatrix} v_{xr}-\omega r_y \\ v_{yr}+\omega r_x \end{bmatrix}", font_size=40).next_to(arrow2)
+
+        method_label = MathTex("toSwerveModuleStates()", font_size=25).shift(LEFT*0.5)
+
+        brace = BraceBetweenPoints([-3, 0, 0], [-1.5, 0, 0]).shift(0.6*DOWN+LEFT*1.6)
+
+        chassis_speeds_label.next_to(brace, DOWN)
+        
+
+        self.play(Write(chassis_speeds))
+        self.play(Create(arrow))
+        self.play(Create(rec), Write(method_label))
+        self.play(Create(arrow2))
+        self.play(Write(v_overall))
+        self.play(Create(brace), Write(chassis_speeds_label))
+
+        self.wait(4)
