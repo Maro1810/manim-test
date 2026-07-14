@@ -492,3 +492,27 @@ class MatrixScene(Scene):
         self.wait(1.2)
         
         self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+class OptimizationScene(Scene):
+    def construct(self):    
+        circle = Circle(radius=2, color=BLUE)
+        current_angle = Arrow(circle.get_center(), circle.point_at_angle(PI/3), color=YELLOW, buff=0)
+
+        path_1 = current_angle.copy()
+        path_2 = current_angle.copy()
+
+        self.play(Create(circle))
+
+        self.play(Create(current_angle))
+
+        dashed = DashedLine(circle.point_at_angle(3*PI/4), circle.point_at_angle(-PI/4), dash_length=0.3)
+
+        path_1.set_color(GREEN)
+        path_2.set_color(RED)
+
+        self.play(Create(dashed))
+
+        self.play(path_1.animate.rotate(5*PI/12, about_point=circle.get_center()), path_2.animate.rotate(-7*PI/12, about_point=circle.get_center()))
+
+        self.wait(3)
+
