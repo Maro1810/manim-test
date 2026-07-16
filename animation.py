@@ -613,6 +613,47 @@ class OptimizationScene(Scene):
                   FadeOut(angle_label),
                   FadeOut(dashed))
         
-        new_angle2 = Arrow(circle.get_center(), circle.get_right(), color=YELLOW, buff=0)
+        current_angle = Arrow(circle.get_center(), circle.get_right(), color=YELLOW, buff=0)
 
+        new_angle2 = Arrow(circle.get_center(), circle.point_at_angle(150*DEGREES), color=GREEN, buff=0)
+
+        self.play(Create(new_angle2), Create(current_angle))
+
+        angle_indicator = Arc(start_angle=0, angle=150*DEGREES).shift(DOWN*0.5)
+
+        label = MathTex(r"150^{\circ}", font_size=30, color=GREEN).next_to(angle_indicator, UP).shift(RIGHT*0.2, DOWN*0.1)
+
+        desired = Text("Desired", font_size=30, color=GREEN)
+        curr = Text("Current", font_size=30, color=YELLOW)
+
+        curr.to_edge(UP).shift(RIGHT, DOWN*1.32)
+        desired.to_edge(UP).shift(LEFT, DOWN*1.3)
+
+        self.play(Write(desired), Write(curr))
+
+        minus = MathTex("-", font_size=30).next_to(desired)
+
+        self.play(Write(minus))
+
+        greater = MathTex(r"> 90^{\circ}", font_size=40).next_to(curr)
+
+        self.play(Write(greater))
         
+        self.play(Rotate(
+            new_angle2,
+            about_point=circle.get_center(),
+            angle=180*DEGREES
+        ))
+
+        self.wait(0.8)
+
+        self.play(Rotate(current_angle,
+                         about_point=circle.get_center(),
+                         angle=-30*DEGREES,
+                         run_time=0.4))
+        
+        self.play(current_angle.animate.rotate(angle=180*DEGREES, about_point=circle.get_center()))
+
+        self.wait(1.8)
+
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
