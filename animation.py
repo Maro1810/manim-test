@@ -657,3 +657,7 @@ class OptimizationScene(Scene):
         self.wait(1.8)
 
         self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+class CoordinateTransformScene(Scene):
+    def construct(self):
+        self.wait(2)
