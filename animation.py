@@ -796,8 +796,16 @@ class CoordinateTransformScene(Scene):
 
         dashed = DashedLine(full_chassis.get_center(), full_chassis.get_center()+RIGHT, dash_length=0.08)
 
-        arc = Arc(start_angle=0, angle=60*DEGREES, radius=0.5).move_to(dashed).shift(UP*0.2, LEFT*0.1)
+        arc = Arc(start_angle=0, angle=60*DEGREES, radius=0.5, color=YELLOW).move_to(dashed).shift(UP*0.2, LEFT*0.1)
 
-        self.play(Create(dashed), Create(arc))
+        theta = MathTex(r"\theta_R", font_size=25, color=YELLOW)
+
+        theta.next_to(arc).shift(UP*0.3)
+
+        vf = Arrow(ax.get_origin(), ax.get_origin()+[1, 2, 0], buff=0, color=GREEN)
+
+        self.play(Create(vf))
+
+        self.play(Create(dashed), Create(arc), Write(theta))
 
         self.wait(2)
